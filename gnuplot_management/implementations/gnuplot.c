@@ -1,41 +1,27 @@
 #include "../headers/gnuplot.h"
 
-int plot_algorithm(FILE *gnuplot,
-				   const char *plot_title,
-				   const char *data_file,
-				   const char *image_file,
-				   int rows_per_size,
-				   int time_column,
-				   const char *series_names[],
-				   int series_count)
+// one graph for one algorithm (4 lines: sorted, random, unique_random, reverse)
+void plot_algo(FILE *gp, const char *name, const char *file)
 {
-	if (gnuplot == NULL || plot_title == NULL || data_file == NULL ||
-		image_file == NULL || series_names == NULL || rows_per_size <= 0 ||
-		time_column <= 0 || series_count <= 0 || series_count > rows_per_size)
-	{
-		return -1;
-	}
+    fprintf(gp, "set title '%s Sort - Performance'\n", name);
+    fprintf(gp, "set output './results/images/%s.png'\n", file);
+    fprintf(gp, "plot './results/%s_file.txt' every 4::0 using 1:3 with linespoints lw 3 pt 7 title 'Sorted', "
+                "'' every 4::1 using 1:3 with linespoints lw 3 pt 7 title 'Random', "
+                "'' every 4::2 using 1:3 with linespoints lw 3 pt 7 title 'Unique Random', "
+                "'' every 4::3 using 1:3 with linespoints lw 3 pt 7 title 'Reverse'\n", file);
+}
 
-	if (fprintf(gnuplot, "set title '%s'\n", plot_title) < 0 ||
-		fprintf(gnuplot, "set output '%s'\n", image_file) < 0 ||
-		fprintf(gnuplot, "plot ") < 0)
-	{
-		return -1;
-	}
-
-	for (int series = 0; series < series_count; series++)
-	{
-		if (series_names[series] == NULL ||
-			fprintf(gnuplot,
-					"'%s' every %d::%d using 1:%d "
-					"with linespoints linewidth 3 pointtype 7 "
-					"pointsize 1.3 title '%s'%s",
-					data_file, rows_per_size, series, time_column,
-					series_names[series], series == series_count - 1 ? "\n" : ", ") < 0)
-		{
-			return -1;
-		}
-	}
-
-	return 0;
+// one graph that compares the 7 algorithms (random or unique_random)
+void plot_compare(FILE *gp, const char *file, const char *title)
+{
+    fprintf(gp, "set title '%s'\n", title);
+    fprintf(gp, "set output './results/images/%s.png'\n", file);
+    fprintf(gp, "plot './results/%s_file.txt' every 8::0 using 1:4 with linespoints lw 3 pt 7 title 'Bubble', "
+                "'' every 8::1 using 1:4 with linespoints lw 3 pt 7 title 'Selection', "
+                "'' every 8::2 using 1:4 with linespoints lw 3 pt 7 title 'Insertion', "
+                "'' every 8::3 using 1:4 with linespoints lw 3 pt 7 title 'Merge', "
+                "'' every 8::4 using 1:4 with linespoints lw 3 pt 7 title 'Quick', "
+                "'' every 8::5 using 1:4 with linespoints lw 3 pt 7 title 'Heap', "
+                "'' every 8::6 using 1:4 with linespoints lw 3 pt 7 title 'Shell', "
+                "'' every 8::7 using 1:4 with linespoints lw 3 pt 7 title 'Radix'\n", file);
 }

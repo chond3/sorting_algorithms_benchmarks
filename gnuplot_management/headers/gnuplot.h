@@ -3,13 +3,7 @@
 
 #include <stdio.h>
 
-int plot_algorithm(FILE *gnuplot,
-				   const char *plot_title,
-				   const char *data_file,
-				   const char *image_file,
-				   int rows_per_size,
-				   int time_column,
-				   const char *series_names[],
-				   int series_count);
+void plot_algo(FILE *gp, const char *name, const char *file);
+void plot_compare(FILE *gp, const char *file, const char *title);
 
 #endif

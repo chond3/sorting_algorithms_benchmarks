@@ -126,80 +126,37 @@ int main()
     fclose(random_file);
     fclose(unique_random_file);
 
-    //====================GNUPLOT====================
+    // GNUPLOT
 
-    static const char *algorithm_files[] = {
-        "bubble", "selection", "insertion", "merge",
-        "quick", "heap", "shell", "radix"};
-    static const char *algorithm_names[] = {
-        "Bubble", "Selection", "Insertion", "Merge",
-        "Quick", "Heap", "Shell", "Radix"};
-    static const char *input_types[] = {
-        "Sorted", "Random", "Unique Random", "Reverse"};
-    static const char *comparison_files[] = {"random", "unique_random"};
-    static const char *comparison_titles[] = {
-        "Random Input - Algorithm Comparison",
-        "Unique Random Input - Algorithm Comparison"};
-    FILE *gnuplot = popen("gnuplot", "w");
-
-    if (gnuplot == NULL)
+    FILE *gp = popen("gnuplot", "w");
+    if (gp == NULL)
     {
         fprintf(stderr, "Error opening GNUplot\n");
         return 1;
     }
 
-    fprintf(gnuplot, "set terminal pngcairo size 1600,1000 enhanced font 'Arial,16'\n");
-    fprintf(gnuplot, "set grid\n");
-    fprintf(gnuplot, "set border linewidth 1.5\n");
-    fprintf(gnuplot, "set tics nomirror\n");
-    fprintf(gnuplot, "set pointsize 1.3\n");
-    fprintf(gnuplot, "set xlabel 'List Size'\n");
-    fprintf(gnuplot, "set ylabel 'Execution Time (seconds)'\n");
-    fprintf(gnuplot, "set key outside right top\n");
+    fprintf(gp, "set terminal pngcairo size 1600,1000 enhanced font 'Arial,16'\n");
+    fprintf(gp, "set grid\n");
+    fprintf(gp, "set xlabel 'List Size'\n");
+    fprintf(gp, "set ylabel 'Execution Time (seconds)'\n");
+    fprintf(gp, "set key outside right top\n");
 
-    for (int algorithm = 0; algorithm < 8; algorithm++)
-    {
-        char data_file[128];
-        char image_file[128];
-        char chart_title[128];
+    // fprintf(gp, "set logscale y\n"); 
 
-        snprintf(data_file, sizeof(data_file), "./results/%s_file.txt", algorithm_files[algorithm]);
-        snprintf(image_file, sizeof(image_file), "./results/images/%s.png", algorithm_files[algorithm]);
-        snprintf(chart_title, sizeof(chart_title), "%s Sort - Performance", algorithm_names[algorithm]);
+    plot_algo(gp, "Bubble", "bubble");
+    plot_algo(gp, "Selection", "selection");
+    plot_algo(gp, "Insertion", "insertion");
+    plot_algo(gp, "Merge", "merge");
+    plot_algo(gp, "Quick", "quick");
+    plot_algo(gp, "Heap", "heap");
+    plot_algo(gp, "Shell", "shell");
+    plot_algo(gp, "Radix", "radix");
 
-        if (plot_algorithm(gnuplot, chart_title, data_file, image_file,
-                           4, 3, input_types, 4) != 0)
-        {
-            pclose(gnuplot);
-            fprintf(stderr, "Error creating graph for %s sort\n", algorithm_names[algorithm]);
-            return 1;
-        }
-    }
+    plot_compare(gp, "random", "Random Input - Algorithm Comparison");
+    plot_compare(gp, "unique_random", "Unique Random Input - Algorithm Comparison");
 
-    for (int comparison = 0; comparison < 2; comparison++)
-    {
-        char data_file[128];
-        char image_file[128];
-
-        snprintf(data_file, sizeof(data_file), "./results/%s_file.txt", comparison_files[comparison]);
-        snprintf(image_file, sizeof(image_file), "./results/images/%s.png", comparison_files[comparison]);
-
-        if (plot_algorithm(gnuplot, comparison_titles[comparison], data_file, image_file,
-                           8, 4, algorithm_names, 8) != 0)
-        {
-            pclose(gnuplot);
-            fprintf(stderr, "Error creating graph for %s comparison\n", comparison_files[comparison]);
-            return 1;
-        }
-    }
-
-    fprintf(gnuplot, "set output\n");
-
-    if (pclose(gnuplot) != 0)
-    {
-        fprintf(stderr, "GNUplot failed to generate the graphs\n");
-        return 1;
-    }
+    fprintf(gp, "set output\n");
+    pclose(gp);
 
     return 0;
 }
