@@ -1,17 +1,17 @@
 #include "../headers/gnuplot.h"
 
-// one graph for one algorithm (4 lines: sorted, random, unique_random, reverse)
+// One graph per algorithm, split by input type.
 void plot_algo(FILE *gp, const char *name, const char *file)
 {
     fprintf(gp, "set title '%s Sort - Performance'\n", name);
     fprintf(gp, "set output './results/images/%s.png'\n", file);
     fprintf(gp, "plot './results/%s_file.txt' every 4::0 using 1:3 with linespoints lw 3 pt 7 title 'Sorted', "
-                "'' every 4::1 using 1:3 with linespoints lw 3 pt 7 title 'Random', "
-                "'' every 4::2 using 1:3 with linespoints lw 3 pt 7 title 'Unique Random', "
+                "'' every 4::1 using 1:3 with linespoints lw 3 pt 7 title 'Random (duplicates allowed)', "
+                "'' every 4::2 using 1:3 with linespoints lw 3 pt 7 title 'Random (unique values)', "
                 "'' every 4::3 using 1:3 with linespoints lw 3 pt 7 title 'Reverse'\n", file);
 }
 
-// one graph that compares the 7 algorithms (random or unique_random)
+// One graph comparing algorithms for a single random input type.
 void plot_compare(FILE *gp, const char *file, const char *title)
 {
     fprintf(gp, "set title '%s'\n", title);

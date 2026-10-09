@@ -91,7 +91,7 @@ int main()
         return 1;
     }
 
-    for (int list_size = 10000; list_size <= 100000; list_size += 10000)
+    for (int list_size =25000; list_size <= 1000000; list_size += 25000)
     {
 
         for (int list_type = 0; list_type <= 3; list_type++)
@@ -153,8 +153,8 @@ int main()
     plot_algo(gp, "Shell", "shell");
     plot_algo(gp, "Radix", "radix");
 
-    plot_compare(gp, "random", "Random Input - Algorithm Comparison");
-    plot_compare(gp, "unique_random", "Unique Random Input - Algorithm Comparison");
+    plot_compare(gp, "random", "Random Input (duplicates allowed) - Algorithm Comparison");
+    plot_compare(gp, "unique_random", "Random Input (unique values) - Algorithm Comparison");
 
     fprintf(gp, "set output\n");
     pclose(gp);

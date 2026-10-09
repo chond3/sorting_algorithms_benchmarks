@@ -23,12 +23,12 @@ int *generate_list(int size, int type)
             arr[i] = i;
         break;
 
-    case 1: // Random
+    case 1: // Random values; duplicates are allowed.
         for (int i = 0; i < size; i++)
             arr[i] = rand30() % 1000000;
         break;
 
-    case 2: // Unique Random
+    case 2: // Random order with unique values.
         for (int i = 0; i < size; i++)
             arr[i] = i;
 

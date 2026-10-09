@@ -7,6 +7,30 @@
 #include "../../algorithms\headers\algorithms.h"
 #include "../../list_management/headers/list.h"
 
+static const char *list_type_key(int list_type)
+{
+    switch (list_type)
+    {
+    case 0: return "sorted";
+    case 1: return "random_duplicates";
+    case 2: return "random_unique";
+    case 3: return "reverse";
+    default: return "unknown";
+    }
+}
+
+static const char *list_type_label(int list_type)
+{
+    switch (list_type)
+    {
+    case 0: return "Sorted";
+    case 1: return "Random (duplicates allowed)";
+    case 2: return "Random (unique values)";
+    case 3: return "Reverse";
+    default: return "Unknown";
+    }
+}
+
 void benchmarks(int arr[], int list_size, int list_type, char algorithm_name[], FILE *file, FILE *random_file, FILE *unique_random_file)
 {
     if (arr == NULL || algorithm_name == NULL || file == NULL || random_file == NULL || unique_random_file == NULL || list_size <= 0)
@@ -150,28 +174,24 @@ void benchmarks(int arr[], int list_size, int list_type, char algorithm_name[], 
 
     fprintf(file, "%d\t%s\t%.9f\n",
             list_size,
-            list_type == 0 ? "sorted" : list_type == 1 ? "random"
-                                    : list_type == 2   ? "unique_random"
-                                                       : "reverse",
+            list_type_key(list_type),
             time_taken);
 
     if (list_type == 1)
     {
-        fprintf(random_file, "%d\t%s\trandom\t%.9f\n",
+        fprintf(random_file, "%d\t%s\trandom_duplicates\t%.9f\n",
                 list_size, algorithm_name, time_taken);
     }
     else if (list_type == 2)
     {
-        fprintf(unique_random_file, "%d\t%s\tunique_random\t%.9f\n",
+        fprintf(unique_random_file, "%d\t%s\trandom_unique\t%.9f\n",
                 list_size, algorithm_name, time_taken);
     }
 
     printf("%s\t\t%d\t%s\t%.9f\n=============================================================\n",
            algorithm_name,
            list_size,
-           list_type == 0 ? "sorted" : list_type == 1 ? "random"
-                                   : list_type == 2   ? "unique_random"
-                                                      : "reverse",
+           list_type_label(list_type),
            time_taken);
 
     free(copy_array);
