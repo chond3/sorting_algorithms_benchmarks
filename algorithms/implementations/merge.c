@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "../headers/algorithms.h"
 
 static void split_and_merge(int arr[], int copy[], int start, int end)
@@ -33,7 +34,10 @@ void merge(int arr[], int n)
 
     int *copy = malloc(n * sizeof(int));
     if (copy == NULL)
+    {
+        fprintf(stderr, "Error: memory allocation failed in merge for %d elements\n", n);
         return;
+    }
 
     split_and_merge(arr, copy, 0, n - 1);
     free(copy);

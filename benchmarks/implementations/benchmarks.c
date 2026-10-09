@@ -9,14 +9,26 @@
 
 void benchmarks(int arr[], int list_size, int list_type, char algorithm_name[], FILE *file, FILE *random_file, FILE *unique_random_file)
 {
+    if (arr == NULL || algorithm_name == NULL || file == NULL || random_file == NULL || unique_random_file == NULL || list_size <= 0)
+    {
+        fprintf(stderr, "Error: invalid benchmark input or output pointer\n");
+        return;
+    }
 
     double time_taken;
     LARGE_INTEGER frequency, start, end;
-QueryPerformanceFrequency(&frequency);
+    if (!QueryPerformanceFrequency(&frequency))
+    {
+        fprintf(stderr, "Error: could not read performance counter frequency\n");
+        return;
+    }
 
     int *copy_array = malloc(list_size * sizeof(int));
     if (copy_array == NULL)
+    {
+        fprintf(stderr, "Error: memory allocation failed for %s (%d elements)\n", algorithm_name, list_size);
         return;
+    }
 
     copy_list(copy_array, arr, list_size);
 
@@ -52,6 +64,13 @@ QueryPerformanceFrequency(&frequency);
     else if (strcmp(algorithm_name, "Radix") == 0)
     {
         algo = 7;
+    }
+
+    if (algo == -1)
+    {
+        fprintf(stderr, "Error: unknown sorting algorithm '%s'\n", algorithm_name);
+        free(copy_array);
+        return;
     }
 
     switch (algo)
@@ -115,6 +134,16 @@ QueryPerformanceFrequency(&frequency);
     default:
 
         break;
+    }
+
+    for (int i = 1; i < list_size; i++)
+    {
+        if (copy_array[i - 1] > copy_array[i])
+        {
+            fprintf(stderr, "Error: %s did not sort the list of %d elements\n", algorithm_name, list_size);
+            free(copy_array);
+            return;
+        }
     }
 
     time_taken = (double)(end.QuadPart - start.QuadPart) / (double)frequency.QuadPart;

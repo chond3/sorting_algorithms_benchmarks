@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "../headers/algorithms.h"
 
 void radix(int arr[], int n)
@@ -13,7 +14,10 @@ void radix(int arr[], int n)
 
     int *output = malloc(n * sizeof(int));
     if (output == NULL)
+    {
+        fprintf(stderr, "Error: memory allocation failed in radix for %d elements\n", n);
         return;
+    }
 
     for (long long exp = 1; max / exp > 0; exp *= 10)
     {

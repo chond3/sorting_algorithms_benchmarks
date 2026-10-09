@@ -9,12 +9,13 @@
 int main()
 {
     // srand((unsigned int)time(NULL));
-
+    srand(42);
+    
     FILE *bubble_file = fopen("./results/bubble_file.txt", "w");
 
     if (bubble_file == NULL)
     {
-        printf("Error opening bubble_file\n");
+        fprintf(stderr, "Error opening bubble_file\n");
         return 1;
     }
 
@@ -22,7 +23,7 @@ int main()
 
     if (selection_file == NULL)
     {
-        printf("Error opening selection_file\n");
+        fprintf(stderr, "Error opening selection_file\n");
         return 1;
     }
 
@@ -30,7 +31,7 @@ int main()
 
     if (insertion_file == NULL)
     {
-        printf("Error opening insertion_file\n");
+        fprintf(stderr, "Error opening insertion_file\n");
         return 1;
     }
 
@@ -38,7 +39,7 @@ int main()
 
     if (merge_file == NULL)
     {
-        printf("Error opening merge_file\n");
+        fprintf(stderr, "Error opening merge_file\n");
         return 1;
     }
 
@@ -46,7 +47,7 @@ int main()
 
     if (quick_file == NULL)
     {
-        printf("Error opening quick_file\n");
+        fprintf(stderr, "Error opening quick_file\n");
         return 1;
     }
 
@@ -54,7 +55,7 @@ int main()
 
     if (heap_file == NULL)
     {
-        printf("Error opening heap_file\n");
+        fprintf(stderr, "Error opening heap_file\n");
         return 1;
     }
 
@@ -62,7 +63,7 @@ int main()
 
     if (shell_file == NULL)
     {
-        printf("Error opening shell_file\n");
+        fprintf(stderr, "Error opening shell_file\n");
         return 1;
     }
 
@@ -70,7 +71,7 @@ int main()
 
     if (radix_file == NULL)
     {
-        printf("Error opening radix_file\n");
+        fprintf(stderr, "Error opening radix_file\n");
         return 1;
     }
 
@@ -78,7 +79,7 @@ int main()
 
     if (random_file == NULL)
     {
-        printf("Error opening random_file\n");
+        fprintf(stderr, "Error opening random_file\n");
         return 1;
     }
 
@@ -86,7 +87,7 @@ int main()
 
     if (unique_random_file == NULL)
     {
-        printf("Error opening unique_random_file\n");
+        fprintf(stderr, "Error opening unique_random_file\n");
         return 1;
     }
 
@@ -98,7 +99,7 @@ int main()
             int *arr = generate_list(list_size, list_type);
             if (arr == NULL)
             {
-                fprintf(stderr, "generate_list failed\n");
+                fprintf(stderr, "Error: failed to generate list (size=%d, type=%d)\n", list_size, list_type);
                 return 1;
             }
 
