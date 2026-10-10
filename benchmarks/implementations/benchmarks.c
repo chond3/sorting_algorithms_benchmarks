@@ -36,7 +36,7 @@ void benchmarks(int arr[], int list_size, int list_type, char algorithm_name[], 
     if (arr == NULL || algorithm_name == NULL || file == NULL || random_file == NULL || unique_random_file == NULL || list_size <= 0)
     {
         fprintf(stderr, "Error: invalid benchmark input or output pointer\n");
-        return;
+        exit(1);
     }
 
     double time_taken;
@@ -44,17 +44,15 @@ void benchmarks(int arr[], int list_size, int list_type, char algorithm_name[], 
     if (!QueryPerformanceFrequency(&frequency))
     {
         fprintf(stderr, "Error: could not read performance counter frequency\n");
-        return;
+        exit(1);
     }
 
     int *copy_array = malloc(list_size * sizeof(int));
     if (copy_array == NULL)
     {
         fprintf(stderr, "Error: memory allocation failed for %s (%d elements)\n", algorithm_name, list_size);
-        return;
+        exit(1);
     }
-
-    copy_list(copy_array, arr, list_size);
 
     int algo = -1 ;
     if (strcmp(algorithm_name, "Bubble") == 0)
@@ -94,83 +92,45 @@ void benchmarks(int arr[], int list_size, int list_type, char algorithm_name[], 
     {
         fprintf(stderr, "Error: unknown sorting algorithm '%s'\n", algorithm_name);
         free(copy_array);
-        return;
+        exit(1);
     }
 
-    switch (algo)
+    int repeat_count = algo >= 3 ? 25 : 1;
+    time_taken = 0.0;
+
+    for (int repeat = 0; repeat < repeat_count; repeat++)
     {
-    case 0:
-
+        copy_list(copy_array, arr, list_size);
         QueryPerformanceCounter(&start);
-        bubble(copy_array, list_size);
-        QueryPerformanceCounter(&end);
-        break;
 
-    case 1:
-
-        QueryPerformanceCounter(&start);
-        selection(copy_array, list_size);
-        QueryPerformanceCounter(&end);
-        break;
-
-    case 2:
-
-        QueryPerformanceCounter(&start);
-        insertion(copy_array, list_size);
-        QueryPerformanceCounter(&end);
-        break;
-
-    case 3:
-
-        QueryPerformanceCounter(&start);
-        merge(copy_array, list_size);
-        QueryPerformanceCounter(&end);
-        break;
-
-    case 4:
-
-        QueryPerformanceCounter(&start);
-        quick(copy_array, list_size);
-        QueryPerformanceCounter(&end);
-        break;
-
-    case 5:
-
-        QueryPerformanceCounter(&start);
-        heap(copy_array, list_size);
-        QueryPerformanceCounter(&end);
-        break;
-
-    case 6:
-
-        QueryPerformanceCounter(&start);
-        shell(copy_array, list_size);
-        QueryPerformanceCounter(&end);
-        break;
-
-    case 7:
-
-        QueryPerformanceCounter(&start);
-        radix(copy_array, list_size);
-        QueryPerformanceCounter(&end);
-        break;
-
-    default:
-
-        break;
-    }
-
-    for (int i = 1; i < list_size; i++)
-    {
-        if (copy_array[i - 1] > copy_array[i])
+        switch (algo)
         {
-            fprintf(stderr, "Error: %s did not sort the list of %d elements\n", algorithm_name, list_size);
-            free(copy_array);
-            return;
+        case 0: bubble(copy_array, list_size); break;
+        case 1: selection(copy_array, list_size); break;
+        case 2: insertion(copy_array, list_size); break;
+        case 3: merge(copy_array, list_size); break;
+        case 4: quick(copy_array, list_size); break;
+        case 5: heap(copy_array, list_size); break;
+        case 6: shell(copy_array, list_size); break;
+        case 7: radix(copy_array, list_size); break;
         }
-    }
 
-    time_taken = (double)(end.QuadPart - start.QuadPart) / (double)frequency.QuadPart;
+        QueryPerformanceCounter(&end);
+
+        for (int i = 1; i < list_size; i++)
+        {
+            if (copy_array[i - 1] > copy_array[i])
+            {
+                fprintf(stderr, "Error: %s did not sort the list of %d elements (repeat %d)\n", algorithm_name, list_size, repeat + 1);
+                free(copy_array);
+                exit(1);
+            }
+        }
+
+        double sample_time = (double)(end.QuadPart - start.QuadPart) / (double)frequency.QuadPart;
+        if (repeat == 0 || sample_time < time_taken)
+            time_taken = sample_time;
+    }
 
     fprintf(file, "%d\t%s\t%.9f\n",
             list_size,

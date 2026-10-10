@@ -1,12 +1,8 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include "..\headers\gnuplot.h"
 
-#include ".\gnuplot_management\headers\gnuplot.h"
-
-int main()
+void plot()
 {
-
-    printf("plot started");
     // GNUPLOT
 
     FILE *gp = popen("gnuplot", "w");
@@ -39,5 +35,4 @@ int main()
     fprintf(gp, "set output\n");
     pclose(gp);
 
-    return 0;
 }
