@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "..\headers\gnuplot.h"
 
 void plot()
@@ -9,7 +10,7 @@ void plot()
     if (gp == NULL)
     {
         fprintf(stderr, "Error opening GNUplot\n");
-        return 1;
+        exit(1);
     }
 
     fprintf(gp, "set terminal pngcairo size 1600,1000 enhanced font 'Arial,16'\n");
